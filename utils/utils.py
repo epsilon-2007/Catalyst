@@ -11,9 +11,7 @@ import torch.nn.functional as F
 
 from experiments.model.resnet import MyResNet
 from experiments.model.densenet import MyDenseNet
-from experiments.model.transformer import get_vit
-from experiments.model.mobilenet import MyMobileNetV2
-from experiments.model.imagenet import resnet18, resnet34, resnet50, mobilenet_v2, densenet121, efficientnet_b0
+from experiments.model.imagenet import  resnet34, resnet50, mobilenet_v2, densenet121
 
 
 from datetime import datetime
@@ -114,14 +112,10 @@ def count_parameters(model):
 
 def set_model(args):
     if args.in_dataset in ['CIFAR-10', 'CIFAR-100']:
-        if args.model in ['resnet18', 'resnet34']:
+        if args.model in ['resnet18']:
             model = MyResNet(args)
         elif args.model in ['densenet101']:
             model = MyDenseNet(args)
-        elif args.model in ['mobilenetv2']:
-            model = MyMobileNetV2(args)
-        # elif args.model in ['resnet18_silu']:
-        #     model = MyResNetSiLU(args)
     else:
         if args.model in ['resnet34_imagenet']:
             model = resnet34(args)
@@ -131,10 +125,6 @@ def set_model(args):
             model = mobilenet_v2(args)
         elif args.model in ['densenet121_imagenet']:
             model = densenet121(args)
-        elif args.model in ['efficientnetb0_imagenet']:
-            model = efficientnet_b0(args)
-        # elif args.model in ['swinT_imagenet', 'swinS_imagenet', 'swinB_imagenet', 'swinL_imagenet']:
-        #     model = get_swin(args=args)
             
     # get the number of model parameters
     print('Number of model parameters: {}'.format(sum([p.data.nelement() for p in model.parameters()])))

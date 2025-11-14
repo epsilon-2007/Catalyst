@@ -63,9 +63,9 @@ def get_logits(inputs, model, args, logits=None):
         model.eval()
         with torch.inference_mode():
             if args.in_dataset == 'ImageNet-1K':
-                if args.model in ['mobilenetv2_imagenet', 'densenet121_imagenet', 'efficientnetb0_imagenet']:
+                if args.model in ['mobilenetv2_imagenet', 'densenet121_imagenet']:
                     logits = model.classifier(inputs)
-                elif args.model in ['ViT', 'swinB_imagenet', 'swinT_imagenet']:
+                elif args.model in ['swinB_imagenet', 'swinT_imagenet']:
                     # inputs = model.norm(inputs)
                     logits = model.head(inputs)
                 else:
@@ -99,12 +99,6 @@ def get_msp_score(inputs, model, args, logits=None):
 
 def get_energy_score(inputs, model, args, logits=None):
     x, y = inputs
-    # if args.ood_eval_type == 'adaptive':
-    #     if args.ood_scale_type in ['entropy', 'feature_entropy']:
-    #         scores = x.data.cpu() / y.data.cpu()
-    #     else:
-    #         scores = x.data.cpu() * y.data.cpu()
-    #     return scores.numpy()
     scales = 1.0
     if args.ood_eval_type == 'adaptive':
         scales = get_scales(y, args)
@@ -124,30 +118,6 @@ def get_energy_score(inputs, model, args, logits=None):
     return scores
 
 def get_odin_score(inputs, model, args):
-
-    #get new softmax score
-    # model.eval()
-    # with torch.inference_mode():
-    #     feature_dim = model.dim_in
-    #     encoder = model.my_encoder(inputs)
-    #     if args.ood_scale_type == 'avg':
-    #         pool = nn.AdaptiveAvgPool2d((1, 1))
-    #         features = pool(encoder)
-    #         features = features.view(-1, feature_dim)
-    #     elif args.ood_scale_type == 'max':
-    #         pool = nn.AdaptiveMaxPool2d((1, 1))
-    #         features = pool(encoder)
-    #         features = features.view(-1, feature_dim)
-    #     elif args.ood_scale_type == 'std':
-    #         features = encoder.std(dim = (2, 3))
-    #         features = features.view(-1, feature_dim)
-    #     scales = 1.0
-    #     if args.ood_eval_type == 'adaptive':
-    #         features = features/args.temp
-    #         scales = get_scales(features, args)
-    #         if args.ood_scale_type == "entropy":
-    #             scales = 1.0/scales
-    #         scales = scales.data.cpu().numpy()
 
     # calculating the perturbation we need to add, i.e the sign of gradient of cross entropy loss w.r.t. input using simple FGSM attack perturbation
     epsilon = args.noise

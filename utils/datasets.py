@@ -44,25 +44,6 @@ def load_feature_scale_dataset(scale_path, score_path):
     dataset = FeatureScaleDataset(scale_path, score_path)
     return dataset
 
-# class ScaleScoreDataset(Dataset):
-#     def __init__(self, scale_path, score_path):
-#         self.scales = np.load(scale_path).astype(np.float32)
-#         self.scores = np.load(score_path).astype(np.float32)
-
-#         assert len(self.scales) == len(self.scores)
-
-#     def __len__(self):
-#         return len(self.scores)
-
-#     def __getitem__(self, idx):
-#         scores = self.scores[idx]
-#         scales = self.scales[idx]
-#         return torch.tensor(scores), torch.tensor(scales)
-    
-# def load_scale_score_dataset(scale_path, score_path):
-#     dataset = ScaleScoreDataset(scale_path, score_path)
-#     return dataset
-
 
 #---------------------------------------------------- SET UP ID DATASET ----------------------------------------------------#
 def load_cifar10(args):
@@ -132,7 +113,7 @@ def load_imagenet1k(args):
     test_set =  datasets.ImageNet(root, split='val',   transform=transform_test)
     train_set = datasets.ImageNet(root, split='train', transform=transform_train)
 
-    fraction = 0.15
+    fraction = 0.15 # knn experiments
     subset_size = int(len(train_set) * fraction)
     remaining_size = len(train_set) - subset_size
     train_subset, _ = torch.utils.data.random_split(
